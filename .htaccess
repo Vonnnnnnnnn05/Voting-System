@@ -1,0 +1,42 @@
+ Security Rules for Online Voting System
+
+# Prevent directory browsing
+Options -Indexes
+
+# Protect sensitive files from direct access
+<FilesMatch "^(database\.php|config\.php)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+# Security Headers
+<IfModule mod_headers.c>
+    # Prevent clickjacking
+    Header set X-Frame-Options "SAMEORIGIN"
+    
+    # XSS Protection
+    Header set X-XSS-Protection "1; mode=block"
+    
+    # Prevent MIME sniffing
+    Header set X-Content-Type-Options "nosniff"
+    
+    # Referrer Policy
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Content Security Policy (adjust as needed)
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data:; font-src 'self' https://cdnjs.cloudflare.com;"
+</IfModule>
+
+# Limit file upload size (adjust as needed)
+php_value upload_max_filesize 2M
+php_value post_max_size 2M
+
+# Session security
+php_value session.cookie_httponly 1
+php_value session.cookie_secure 0
+php_value session.use_strict_mode 1
+
+# Error handling
+php_flag display_errors Off
+php_flag log_errors On
+php_value error_log /tmp/php-errors.log
